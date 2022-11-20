@@ -1,7 +1,7 @@
 const socket = io.connect();
 
 function addMessage() {
-    const name= document.getElementById('name').value;
+    const name = document.getElementById('name').value;
     const msg = document.getElementById('message').value;
 
     const newMessage = {
@@ -11,7 +11,22 @@ function addMessage() {
     socket.emit('new-message', newMessage);
     return false;
 }
-socket.on('messages', msj =>{
-    const messageHtml = msj.map(msj => `<b>${msj.name}:</b><i>${msj.message}</i>`).join('<br>');
-    document.querySelector('p').innerHTML = messageHtml;
-});
+
+
+function render(data) {
+    const html = data.map((elem, index) => {
+        return (`
+        <div>
+            <strong>${elem.name}</strong>
+            <em>${elem.message}</em>
+        </div>
+        `);
+    }).join(' ');
+        document.getElementById('messages').innerHTML = html;
+    }
+
+
+
+socket.on('messages', function (data) {
+    render(data)
+    });

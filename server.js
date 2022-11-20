@@ -15,10 +15,11 @@ app.use(express.static(__dirname +'/public'));
 
 io.on('connection', socket => {
     console.log('Nuevo cliente conectado');
+    socket.emit('messages', messages)
 
 
-    socket.on('message', data => {
-        messages.push({socketId: socket.id, message: data, date: new Date()});
+    socket.on('new-message', data => {
+        messages.push(data);
         io.sockets.emit('messages', messages);
     });
 });
