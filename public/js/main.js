@@ -2,12 +2,13 @@ const socket = io.connect();
 
 function addMessage() {
     const name = document.getElementById('name').value;
-    const msg = document.getElementById('message').value;
+    const message = document.getElementById('message').value;
 
     const newMessage = {
         name: name,
-        msg: message,
+        message: message,
     };
+    
     socket.emit('new-message', newMessage);
     return false;
 }

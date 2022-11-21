@@ -30,4 +30,4 @@ const server = httpServer.listen(port, () =>{
     console.log (`Server listening en http://localhost:${port}`);
 });
 
-server.on ('err', error=> console.log(`Server error, ${err}`));
+server.on ('err', err => console.log(`Server error, ${err}`));
