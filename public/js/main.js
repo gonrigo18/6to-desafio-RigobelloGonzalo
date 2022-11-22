@@ -8,11 +8,10 @@ function addMessage() {
         name: name,
         message: message,
     };
-    
+
     socket.emit('new-message', newMessage);
     return false;
 }
-
 
 function render(data) {
     const html = data.map((elem, index) => {
