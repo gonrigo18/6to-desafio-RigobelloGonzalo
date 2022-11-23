@@ -16,7 +16,7 @@ class container {
                 if (element.id > this.countID) this.countID = element.id;
             }
         } catch (err) {
-            console.log('Aún no hay archivo');
+            console.log('No hay productos ingresados');
         }
     }
 
@@ -44,7 +44,7 @@ class container {
                 result = null;
             }
         } else {
-            result = 'Archivo vacio';
+            result = `No hay productos ingresados`;
         }
         return result;
     }
@@ -57,7 +57,7 @@ class container {
             this.write()
             result = `Producto eliminado`;
         } else {
-            result = `Archivo vacio`
+            result = `No hay productos ingresados`;
         }
         return result
     }

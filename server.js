@@ -1,5 +1,5 @@
 const express = require("express");
-const Contenedor = require("./class/container");
+const Contenedor = require("./container");
 const handlebars = require("express-handlebars");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
@@ -41,8 +41,10 @@ app.post("/", (req, res) => {
   return res.render("layouts/main.hbs", { list: content, showList: boolean });
 });
 
-httpServer.listen(process.env.PORT || 8080, () => {
-  console.log("SERVER ON");
+const port = 8080;
+
+const server = httpServer.listen(port, () =>{
+    console.log (`Server listening en http://localhost:${port}`);
 });
 
 /* CHAT */
