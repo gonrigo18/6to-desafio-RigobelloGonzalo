@@ -44,7 +44,7 @@ app.post("/", (req, res) => {
 const port = 8080;
 
 const server = httpServer.listen(port, () =>{
-    console.log (`Server listening en http://localhost:${port}`);
+    console.log (`Server listening on http://localhost:${port}`);
 });
 
 /* CHAT */
