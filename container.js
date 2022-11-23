@@ -1,86 +1,78 @@
-const { promises: fs } = require('fs')
+const fs = require('fs')
 
-class Container {
-
-    constructor(route) {
-        this.route = route
+class container {
+    constructor(name) {
+        this.fileName = name;
+        this.countID = 0;
+        this.content = [];
+        this.init();
     }
 
-    async getAll() {
+    async init() {
         try {
-            const content = JSON.parse(await fs.readFile(`./products.txt`, 'utf-8'))
-            return content
-        } catch (err) {
-            console.log(err)
-            return []
-        }
-    }
-    async deleteAll() {
-        try {
-            await fs.unlink(`./products.txt`)
-            console.log("Archive deleted successfully")
-        } catch (err) {
-            console.log(err)
-        }
-    }
-    async deleteById(id) {
-        try {
-            const content = await this.getAll()
-            const filter = content.filter(e => e.id !== id)
-            await fs.writeFile(`./products.txt`, JSON.stringify(filter, null, 2))
-            return "Successfully deleted"
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-    async getById(id) {
-        try {
-            const content = JSON.parse(await fs.readFile(`./products.txt`, 'utf-8'))
-            const find = content.find(e => e.id === id)
-            return find
-        }
-        catch (err) {
-            console.log(err)
-        }
-    }
-
-    async save(product) {
-        try {
-            const products = await this.getAll();
-            if (products.length == 0) {
-                const firstProduct = { id: 1, title: product.title, price: product.price, thumbnail: product.thumbnail }
-                await products.push(firstProduct)
-                await fs.writeFile(`./products.txt`, JSON.stringify(products, null, 2))
-            } else if (products.length == 1) {
-                const secondProduct = { id: 1 + 1, title: product.title, price: product.price, thumbnail: product.thumbnail }
-                await products.push(secondProduct)
-                await fs.writeFile(`./products.txt`, JSON.stringify(products, null, 2))
-            } else {
-                const productMayor = products.sort((b, a) => a.id - b.id)[0];
-                const newProduct = { id: (productMayor.id + 1), title: product.title, price: product.price, thumbnail: product.thumbnail }
-                await products.push(newProduct)
-                await fs.writeFile(`./products.txt`, JSON.stringify(products, null, 2))
+            let data = await fs.promises.readFile(this.fileName);
+            this.content = JSON.parse(data);
+            for (const element of this.content) {
+                if (element.id > this.countID) this.countID = element.id;
             }
         } catch (err) {
-            console.log(err)
+            console.log('Aún no hay archivo');
         }
-        return "Item saved successfull"
     }
 
+    async write() { //Método que escribe/sobreescribe
+        await fs.promises.writeFile(this.fileName, JSON.stringify(this.content));
+    }
 
-    async update(product, id) {
-        try {
-            await this.deleteById(id)
-            console.log(id);
-            const products = await this.getAll()
-            const updatedProduct = { id: id, title: product.title, price: product.price, thumbnail: product.thumbnail }
-            products.push(updatedProduct)
-            await fs.writeFile(`./products.txt`, JSON.stringify(products, null, 2))
-        } catch (err) {
-            console.log(err)
+    save(object) {
+        this.countID++;
+        object["id"] = this.countID;
+        this.content.push(object);
+        this.write();
+        return `Se añadio el objeto con el id: ${this.countID}.`;
+    }
+
+    getAll() {
+        return this.content;
+    }
+
+    getById(id) {
+        let result;
+        if (this.content !== []) {
+            result = this.content.find(x => x.id === id);
+            if (result === undefined) {
+                result = null;
+            }
+        } else {
+            result = 'Archivo vacio';
         }
-        return "Item updated successfull"
+        return result;
+    }
+
+    deleteById(id) {
+        let result;
+        if (this.content !== []) {
+            let newContent = this.content.filter(x => x.id !== id);
+            this.content = newContent;
+            this.write()
+            result = `Producto eliminado`;
+        } else {
+            result = `Archivo vacio`
+        }
+        return result
+    }
+
+    async deleteAll() {
+        this.content = await this.content.splice(0, this.content.length)
+        this.write()
+    }
+
+    update(id, obj) {
+        const index = this.content.findIndex(objT => objT.id == id);
+        obj.id = this[index].id
+        this.content[index] = obj;
+        return obj;
     }
 }
-module.exports = Container
+
+module.exports = container
