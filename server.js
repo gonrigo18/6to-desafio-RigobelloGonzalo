@@ -1,5 +1,5 @@
 const express = require("express");
-const Contenedor = require("./class/contenedor");
+const Contenedor = require("./class/container");
 const handlebars = require("express-handlebars");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
